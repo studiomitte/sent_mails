@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns:t3="http://typo3.org/schemas/xliff" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" original="messages" datatype="plaintext" product-name="sent_mails" date="2023-09-05T13:38:27+02:00">
+        <header></header>
+        <body>
+            <trans-unit id="from" resname="from">
+                <source>From</source>
+            </trans-unit>
+            <trans-unit id="from_name" resname="from_name">
+                <source>Sender Name</source>
+            </trans-unit>
+            <trans-unit id="from_email" resname="from_email">
+                <source>Sender Email</source>
+            </trans-unit>
+            <trans-unit id="to" resname="to">
+                <source>Receiver</source>
+            </trans-unit>
+            <trans-unit id="to_name" resname="to_name">
+                <source>Receiver Name</source>
+            </trans-unit>
+            <trans-unit id="to_email" resname="to_email">
+                <source>Receiver Email</source>
+            </trans-unit>
+            <trans-unit id="subject" resname="subject">
+                <source>Subject</source>
+            </trans-unit>
+            <trans-unit id="message" resname="message">
+                <source>Message</source>
+            </trans-unit>
+            <trans-unit id="debug" resname="debug">
+                <source>Debug</source>
+            </trans-unit>
+            <trans-unit id="module.title">
+                <source>Mails</source>
+            </trans-unit>
+            <trans-unit id="module.description">
+                <source>Sent Mails</source>
+            </trans-unit>
+            <trans-unit id="module.shortDescription">
+                <source>Module to list sent mails and option to resend it</source>
+            </trans-unit>
+            <trans-unit id="module.sendTestMail">
+                <source>Send test mail</source>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

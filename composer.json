@@ -1,0 +1,34 @@
+{
+  "name": "studiomitte/sent-mails",
+  "type": "typo3-cms-extension",
+  "description": "",
+  "keywords": [
+    "TYPO3",
+    "extension",
+    "backend",
+    "search"
+  ],
+  "authors": [
+    {
+      "name": "Georg Ringer",
+      "email": "gr@studiomitte.com",
+      "role": "Developer"
+    }
+  ],
+  "license": [
+    "GPL-2.0-or-later"
+  ],
+  "require": {
+    "typo3/cms-core": "^12"
+  },
+  "autoload": {
+    "psr-4": {
+      "StudioMitte\\SentMails\\": "Classes/"
+    }
+  },
+  "extra": {
+    "typo3/cms": {
+      "extension-key": "sent_mails"
+    }
+  }
+}
