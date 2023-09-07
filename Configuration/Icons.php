@@ -21,4 +21,12 @@ return [
         'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
         'source' => 'EXT:sent_mails/Resources/Public/Icons/status_error.svg',
     ],
+    'sentmails-debug' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:sent_mails/Resources/Public/Icons/debug.svg',
+    ],
+    'sentmails-forward' => [
+        'provider' => \TYPO3\CMS\Core\Imaging\IconProvider\SvgIconProvider::class,
+        'source' => 'EXT:sent_mails/Resources/Public/Icons/forward.svg',
+    ],
 ];

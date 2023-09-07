@@ -31,14 +31,14 @@ class AfterMailSentEventListener
 
         $isReply = get_class($originalMessage) === RawMessage::class;
 
-        DebuggerUtility::var_dump($isReply);
-        DebuggerUtility::var_dump($originalMessage, 'original');
-        DebuggerUtility::var_dump($sentMailLogCustomId, '$sentMailLogCustomId');
-        DebuggerUtility::var_dump($sentMailLogId, '$sentMailLogId');
+//        DebuggerUtility::var_dump($isReply);
+//        DebuggerUtility::var_dump($originalMessage, 'original');
+//        DebuggerUtility::var_dump($sentMailLogCustomId, '$sentMailLogCustomId');
+//        DebuggerUtility::var_dump($sentMailLogId, '$sentMailLogId');
 //        DebuggerUtility::var_dump($sentMessage->getHeaders(), 'sentXXX');
 
         $logRow = $this->getLogRecord((int)$sentMailLogId, $sentMailLogCustomId);
-        DebuggerUtility::var_dump($logRow, 'logrow');
+//        DebuggerUtility::var_dump($logRow, 'logrow');
 
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_mailsent_mail');
         if ($logRow) {

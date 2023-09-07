@@ -42,7 +42,8 @@ class MailAdministrationController
     public function overviewAction(ServerRequestInterface $request): ResponseInterface
     {
         $mails = $this->getMails();
-
+        $this->enrichMails($mails);
+//print_r($mails[0]['sender']);die;
         $view = $this->moduleTemplateFactory->create($request);
         $view->assignMultiple([
             'mails' => $mails,
@@ -51,6 +52,15 @@ class MailAdministrationController
         $this->registerDocHeaderButtons($view, $request->getAttribute('normalizedParams')->getRequestUri());
 
         return $view->renderResponse('Overview.html');
+    }
+
+    protected function enrichMails(array &$mails): void
+    {
+        foreach ($mails as &$mail) {
+            foreach (['sender', 'receiver', 'cc', 'bcc'] as $field) {
+                $mail[$field] = $mail[$field] ? json_decode($mail[$field], true) : [];
+            }
+        }
     }
 
     public function resendAction(ServerRequestInterface $request): ResponseInterface
@@ -114,20 +124,35 @@ class MailAdministrationController
     public function testAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getParsedBody();
-        if ($params['submit'] ?? false) {
-            $mailer = GeneralUtility::makeInstance(Mailer::class);
-            $email = GeneralUtility::makeInstance(FluidEmail::class);
-            $email->subject($params['subject']);
-            $email->text($params['plain']);
-            $email->html($params['html'] ?? '');
-            $email->to(new Address($params['fromEmail'], $params['fromName']));
-            $mailer->send($email);
+        $view = $this->moduleTemplateFactory->create($request);
 
-            $this->addFlashMessage('Mail sent', '', ContextualFeedbackSeverity::OK);
-            return new RedirectResponse($this->uriBuilder->buildUriFromRoute('sentmail_admin'));
+        if ($params['submit'] ?? false) {
+            try {
+
+
+                $mailer = GeneralUtility::makeInstance(Mailer::class);
+                $email = GeneralUtility::makeInstance(FluidEmail::class);
+                $email->subject($params['subject']);
+                $email->text($params['plain']);
+                $email->html($params['html'] ?? '');
+                $email->to(new Address($params['fromEmail'], $params['fromName']));
+//            $email->cc(new Address('cc@example.org', 'Mail as CC'));
+//            $email->bcc(...[
+//                new Address('bcc1@example.org', 'Mail as BCC1'),
+//                new Address('bcc2@example.org', 'Mail as BCC2'),
+//            ]);
+                $mailer->send($email);
+
+                $this->addFlashMessage('Mail sent', '', ContextualFeedbackSeverity::OK);
+                return new RedirectResponse($this->uriBuilder->buildUriFromRoute('sentmail_admin'));
+            } catch (\Exception $e) {
+                $view->assignMultiple([
+                    'error' => $e,
+                    'params' => $params,
+                ]);
+            }
         }
 
-        $view = $this->moduleTemplateFactory->create($request);
         return $view->renderResponse('Test.html');
 
     }

@@ -3,11 +3,11 @@
 CREATE TABLE tx_mailsent_mail (
     from_name varchar(255) DEFAULT '' NOT NULL,
     from_email varchar(255) DEFAULT '' NOT NULL,
-    to_name varchar(255) DEFAULT '' NOT NULL,
-    to_email varchar(255) DEFAULT '' NOT NULL,
-    to_full text DEFAULT '' NOT NULL,
-    to_cc text DEFAULT '' NOT NULL,
-    to_bcc text DEFAULT '' NOT NULL,
+    receiver text DEFAULT '' NOT NULL,
+    sender text DEFAULT '' NOT NULL,
+    bcc text DEFAULT '' NOT NULL,
+    cc text DEFAULT '' NOT NULL,
+
     subject varchar(255) DEFAULT '' NOT NULL,
     message_id varchar(255) DEFAULT '' NOT NULL,
     internal_id varchar(255) DEFAULT '' NOT NULL,

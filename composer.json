@@ -19,7 +19,8 @@
     "GPL-2.0-or-later"
   ],
   "require": {
-    "typo3/cms-core": "^12"
+    "typo3/cms-core": "^12",
+    "zbateson/mail-mime-parser": "^2.4"
   },
   "autoload": {
     "psr-4": {

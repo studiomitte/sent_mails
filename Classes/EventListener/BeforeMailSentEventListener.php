@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace StudioMitte\SentMails\EventListener;
 
+use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\RawMessage;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Mail\Event\BeforeMailerSentMessageEvent;
-use TYPO3\CMS\Core\Mail\Mailer;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
@@ -26,9 +26,6 @@ class BeforeMailSentEventListener
 
     public function __invoke(BeforeMailerSentMessageEvent $event): void
     {
-        /** @var Mailer $mailer */
-        $mailer = $event->getMailer();
-        $transport = $mailer->getTransport();
         /** @var Email $sentMessage */
         $sentMessage = $event->getMessage();
         /** @var Email $originalMessage */
@@ -46,26 +43,43 @@ class BeforeMailSentEventListener
 //
 //        die;
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_mailsent_mail');
-        $connection->insert('tx_mailsent_mail',
-            [
-                'crdate' => time(),
-                'subject' => $isReply ? '' : $originalMessage->getHeaders()->getHeaderBody('Subject'),
-                'from_name' => $envelope ? $envelope->getSender()->getName() : $originalMessage->getFrom()[0]->getName(),
-                'from_email' => $envelope ? $envelope->getSender()->getAddress() : $originalMessage->getFrom()[0]->getAddress(),
-                'to_name' => $envelope ? $envelope->getRecipients()[0]->getName() : $originalMessage->getTo()[0]->getName(),
-                'to_email' => $envelope ? $envelope->getRecipients()[0]->getAddress() : $originalMessage->getTo()[0]->getAddress(),
-                'debug' => '',
-                'message_id' => $customId,
-                'message' => $sentMessage->toString(),
-                'original_message' => $originalMessage->toString(),
-                'envelope_original' => serialize($envelope),
-                'internal_id' => $customId,
-                'email_serialized' => $originalMessage instanceof Email ? serialize($originalMessage) : '',
-                'settings' => json_encode($this->getSettings()),
-            ]
-        );
+        $connection->insert('tx_mailsent_mail', [
+            'crdate' => time(),
+            'subject' => $isReply ? '' : $originalMessage->getHeaders()->getHeaderBody('Subject'),
+            'sender' => $this->convertAddresses($envelope ? $envelope->getSender() : $originalMessage->getFrom()),
+            'receiver' => $this->convertAddresses($envelope ? $envelope->getRecipients() : $originalMessage->getTo()),
+            'bcc' => $this->convertAddresses($originalMessage->getBcc()),
+            'cc' => $this->convertAddresses($originalMessage->getCc()),
+            'debug' => '',
+            'message_id' => $customId,
+            'message' => $sentMessage->toString(),
+            'original_message' => $originalMessage->toString(),
+            'envelope_original' => serialize($envelope),
+            'internal_id' => $customId,
+            'email_serialized' => $originalMessage instanceof Email ? serialize($originalMessage) : '',
+            'settings' => json_encode($this->getSettings()),
+        ]);
         $sentMessage->getHeaders()->remove('X-SentMail_ID');
         $sentMessage->getHeaders()->addTextHeader('X-SentMail_ID', $connection->lastInsertId('tx_mailsent_mail'));
+    }
+
+    /**
+     * @param Address|Address[] $addresses
+     */
+    protected function convertAddresses(Address|array $addresses): string
+    {
+        $converted = [];
+        if ($addresses instanceof Address) {
+            $addresses = [$addresses];
+        }
+        foreach ($addresses as $address) {
+            $converted[] = [
+                'name' => $address->getName(),
+                'email' => $address->getAddress(),
+                '_string' => $address->toString(),
+            ];
+        }
+        return json_encode($converted, JSON_THROW_ON_ERROR);
     }
 
     protected function getSettings(): array
