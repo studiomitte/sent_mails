@@ -37,24 +37,20 @@ class BeforeMailSentEventListener
 
 //        $originalMessage = $sentMessage->getOriginalMessage();
         $isReply = get_class($originalMessage) === RawMessage::class;
-        $envelope = $event->getEnvelope();
 //        DebuggerUtility::var_dump($isReply, '$isReply');
-//        DebuggerUtility::var_dump($envelope, 'envelope');
 //
-//        die;
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_mailsent_mail');
         $connection->insert('tx_mailsent_mail', [
             'crdate' => time(),
             'subject' => $isReply ? '' : $originalMessage->getHeaders()->getHeaderBody('Subject'),
-            'sender' => $this->convertAddresses($envelope ? $envelope->getSender() : $originalMessage->getFrom()),
-            'receiver' => $this->convertAddresses($envelope ? $envelope->getRecipients() : $originalMessage->getTo()),
+            'sender' => $this->convertAddresses($originalMessage->getFrom()),
+            'receiver' => $this->convertAddresses( $originalMessage->getTo()),
             'bcc' => $this->convertAddresses($originalMessage->getBcc()),
             'cc' => $this->convertAddresses($originalMessage->getCc()),
             'debug' => '',
             'message_id' => $customId,
             'message' => $sentMessage->toString(),
             'original_message' => $originalMessage->toString(),
-            'envelope_original' => serialize($envelope),
             'internal_id' => $customId,
             'email_serialized' => $originalMessage instanceof Email ? serialize($originalMessage) : '',
             'settings' => json_encode($this->getSettings()),

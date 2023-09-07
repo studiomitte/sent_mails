@@ -21,6 +21,9 @@ return [
             'test' => [
                 'target' => \StudioMitte\SentMails\Controller\MailAdministrationController::class . '::testAction',
             ],
+            'forward' => [
+                'target' => \StudioMitte\SentMails\Controller\MailAdministrationController::class . '::forwardAction',
+            ],
         ],
     ],
 

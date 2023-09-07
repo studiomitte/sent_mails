@@ -30,8 +30,7 @@
                         <th class="align-top">Subject</th>
                         <th class="align-top">To</th>
                         <th class="align-top">From</th>
-                        <th class="align-top">Preview</th>
-                        <th class="align-top">Actions</th>
+                        <th class="align-top" colspan="2">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -100,7 +99,7 @@
                                     <core:icon identifier="actions-refresh"/>
                                     Resend
                                 </a>
-                                <a href="{be:moduleLink(route:'sentmail_admin.resend',arguments: {mail:mail.uid})}"
+                                <a href="{be:moduleLink(route:'sentmail_admin.forward',arguments: {mail:mail.uid})}"
                                    class="btn btn-sm btn-default">
                                     <core:icon identifier="sentmails-forward"/>
                                     Forward
@@ -143,8 +142,6 @@
             <br>
         </f:if>
     </f:for>
-
-
 </f:section>
 
 </html>

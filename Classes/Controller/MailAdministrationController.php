@@ -5,7 +5,9 @@ namespace StudioMitte\SentMails\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\RawMessage;
 use TYPO3\CMS\Backend\Attribute\Controller;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -42,58 +44,87 @@ class MailAdministrationController
     public function overviewAction(ServerRequestInterface $request): ResponseInterface
     {
         $mails = $this->getMails();
-        $this->enrichMails($mails);
-//print_r($mails[0]['sender']);die;
+        foreach ($mails as &$mail) {
+            $this->enrichMail($mail);
+        }
         $view = $this->moduleTemplateFactory->create($request);
         $view->assignMultiple([
             'mails' => $mails,
             'uriBuilder' => $this->uriBuilder,
         ]);
-        $this->registerDocHeaderButtons($view, $request->getAttribute('normalizedParams')->getRequestUri());
 
+        $this->registerDocHeaderButtons($view, $request->getAttribute('normalizedParams')->getRequestUri());
         return $view->renderResponse('Overview.html');
     }
 
-    protected function enrichMails(array &$mails): void
+    protected function enrichMail(array &$mail): void
     {
-        foreach ($mails as &$mail) {
-            foreach (['sender', 'receiver', 'cc', 'bcc'] as $field) {
-                $mail[$field] = $mail[$field] ? json_decode($mail[$field], true) : [];
-            }
+        foreach (['sender', 'receiver', 'cc', 'bcc'] as $field) {
+            $mail[$field] = $mail[$field] ? json_decode($mail[$field], true) : [];
         }
     }
 
     public function resendAction(ServerRequestInterface $request): ResponseInterface
     {
-        $redirectResponse = new RedirectResponse($this->uriBuilder->buildUriFromRoute('sentmail_admin'));
-        $id = (int)($request->getQueryParams()['mail'] ?? 0);
-        if (!$id) {
-            $this->addFlashMessage('No mail id given');
-            return $redirectResponse;
+        $row = $this->getMailRow($request);
+        if (!$row) {
+            $this->addFlashMessage('No mail record found');
+            return $this->getRedirectResponseToOverview();
         }
         $mailMess = GeneralUtility::makeInstance(Mailer::class);
 
-        $row = BackendUtility::getRecord('tx_mailsent_mail', $id);
-        if (!$row) {
-            $this->addFlashMessage(sprintf('No mail with id %d found', $id));
-            return $redirectResponse;
-        }
-        $data = $row['message'];
-
-        $message = unserialize($row['email_serialized']);
-        $envelope = unserialize($row['envelope_original']);;
+        $message = unserialize($row['email_serialized'], ['allowed_classes' => [Email::class, RawMessage::class]]);
+        $envelope = unserialize($row['envelope_original']);
         $mailMess->send($message, $envelope);
 
-        $this->addFlashMessage(sprintf('Mail with id %d was resent', $id), '', ContextualFeedbackSeverity::OK);
-        return $redirectResponse;
+        $this->addFlashMessage(sprintf('Mail with id %d was resent', $row['uid']), '', ContextualFeedbackSeverity::OK);
+        return $this->getRedirectResponseToOverview();
+    }
+
+    public function forwardAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $params = $request->getParsedBody();
+        $mailRow = $this->getMailRow($request);
+        if (!$mailRow) {
+            $this->addFlashMessage('No mail record found');
+            return $this->getRedirectResponseToOverview();
+        }
+        $this->enrichMail($mailRow);
+
+        $view = $this->moduleTemplateFactory->create($request);
+        $view->assignMultiple([
+            'mail' => $mailRow,
+            'params' => $params,
+            'uriBuilder' => $this->uriBuilder,
+        ]);
+
+        if ($params['submit'] ?? false) {
+            $mailMess = GeneralUtility::makeInstance(Mailer::class);
+
+            /** @var Email $message */
+            $message = unserialize($mailRow['email_serialized']);
+            $envelope = unserialize($mailRow['envelope_original']);
+
+            $message->to(new Address($params['toEmail'], $params['toName'] ?? ''));
+            $message->subject($params['subject']);
+
+            try {
+                $mailMess->send($message, $envelope);
+                $this->addFlashMessage(sprintf('Mail with id %d was resent', $mailRow['uid']), '', ContextualFeedbackSeverity::OK);
+                return $this->getRedirectResponseToOverview();
+            } catch (\Exception $e) {
+                $view->assign('error', $e);
+            }
+        }
+
+        return $view->renderResponse('Forward.html');
     }
 
     public function previewAction(ServerRequestInterface $request): ResponseInterface
     {
-        $id = (int)($request->getQueryParams()['mail'] ?? 0);
-        $mail = BackendUtility::getRecord('tx_mailsent_mail', $id);
+        $mail = $this->getMailRow($request);
         if (!$mail) {
-            return new HtmlResponse(sprintf('ERROR: No mail with id %d found', $id));
+            return new HtmlResponse('ERROR: No mail record found');
         }
 
         $message = Message::from($mail['original_message'], false);;
@@ -129,7 +160,6 @@ class MailAdministrationController
         if ($params['submit'] ?? false) {
             try {
 
-
                 $mailer = GeneralUtility::makeInstance(Mailer::class);
                 $email = GeneralUtility::makeInstance(FluidEmail::class);
                 $email->subject($params['subject']);
@@ -154,12 +184,11 @@ class MailAdministrationController
         }
 
         return $view->renderResponse('Test.html');
-
     }
 
     private function addFlashMessage(string $message, string $title = '', $severity = ContextualFeedbackSeverity::WARNING): void
     {
-        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, $title, $severity);
+        $flashMessage = GeneralUtility::makeInstance(FlashMessage::class, $message, $title, $severity, true);
         $flashMessageService = GeneralUtility::makeInstance(FlashMessageService::class);
         $defaultFlashMessageQueue = $flashMessageService->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
@@ -190,14 +219,22 @@ class MailAdministrationController
             ->setTitle($languageService->sL('LLL:EXT:sent_mails/Resources/Private/Language/locallang.xlf:module.sendTestMail'))
             ->setIcon($this->iconFactory->getIcon('actions-plus', Icon::SIZE_SMALL));
         $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
+    }
 
+    protected function getMailRow(ServerRequestInterface $request): array
+    {
+        $id = (int)($request->getQueryParams()['mail'] ?? 0);
+        $row = BackendUtility::getRecord('tx_mailsent_mail', $id);
+        return (array)$row;
+    }
 
+    protected function getRedirectResponseToOverview(): RedirectResponse
+    {
+        return new RedirectResponse($this->uriBuilder->buildUriFromRoute('sentmail_admin'));
     }
 
     private function getLanguageService()
     {
         return $GLOBALS['LANG'];
     }
-
-
 }

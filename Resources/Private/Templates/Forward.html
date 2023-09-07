@@ -1,0 +1,117 @@
+<html
+        xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+        xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+        xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+        data-namespace-typo3-fluid="true"
+>
+
+<f:layout name="Module"/>
+
+<f:section name="Content">
+    <f:be.pageRenderer
+            includeJavaScriptModules="{
+            0: '@typo3/backend/modal.js',
+            1: '@typo3/backend/context-menu.js'
+        }"
+    />
+
+    <h1>Forward</h1>
+    <f:be.infobox state="-1">Be careful with forwarding possible sensitive information!</f:be.infobox>
+
+    <div class="row">
+        <div class="col-md-4">
+            <f:if condition="{error}">
+                <f:be.infobox state="2" title="Error">{error.message}</f:be.infobox>
+            </f:if>
+
+            <form method="post" action="{be:moduleLink(route:'sentmail_admin.forward',arguments: {mail:mail.uid})}">
+                <input type="hidden" name="submit" value="1"/>
+
+                <div class="form-group">
+                    <label for="toEmail">To Email</label>
+                    <input type="email" class="form-control" id="toEmail" name="toEmail" value="{params.toEmail}"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="toName">To Name</label>
+                    <input type="text" class="form-control" id="toName" name="toName" value="{params.toName}"
+                           required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" class="form-control" id="subject" name="subject"
+                           value="{f:if(condition:params.subject,then:params.subject,else:mail.subject)}" required>
+                </div>
+
+                <div class="form-group">
+                    <f:form.submit value="Submit" class="btn btn-primary"/>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-8">
+            <table class="table table-condensed table striped">
+                <tr>
+                    <th>Date</th>
+                    <td>
+                        <f:format.date date="@{mail.crdate}" format="d.m.Y H:i:s"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Subject</th>
+                    <td>{mail.subject}</td>
+                </tr>
+                <tr>
+                    <th>To</th>
+                    <td>
+                        <f:render section="mails" arguments="{mails:mail.receiver}"/>
+                    </td>
+                </tr>
+                <f:if condition="{mail.bcc}">
+                    <tr>
+                        <th>BCC</th>
+                        <td>
+                            <f:render section="mails" arguments="{mails:mail.bcc}"/>
+                        </td>
+                    </tr>
+                </f:if>
+                <f:if condition="{mail.cc}">
+                    <tr>
+                        <th>CC</th>
+                        <td>
+                            <f:render section="mails" arguments="{mails:mail.cc}"/>
+                        </td>
+                    </tr>
+                </f:if>
+            </table>
+
+            <div class="btn-group">
+                <a class="t3js-modal-trigger modal-size-large btn btn-default" title="Plain"
+                   data-title="Preview in Plain"
+                   data-bs-content=""
+                   data-size="large"
+                   data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'plain'})}">
+                    <core:icon identifier="sentmails-type-text"/>
+                    Plain
+                </a>
+                <a class="t3js-modal-trigger modal-size-large btn btn-default" title="HTML"
+                   data-title="Preview in HTML"
+                   data-bs-content=""
+                   data-size="large"
+                   data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'html'})}">
+                    <core:icon identifier="sentmails-type-html"/>
+                    HTML
+                </a>
+            </div>
+        </div>
+    </div>
+</f:section>
+
+<f:section name="mails">
+    <f:for each="{mails}" as="r" iteration="i">
+        {r.name} ({r.email})
+        <f:if condition="!{i.isLast}">
+            <br>
+        </f:if>
+    </f:for>
+</f:section>
+</html>

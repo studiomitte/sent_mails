@@ -46,6 +46,7 @@ class AfterMailSentEventListener
                 [
                     'message_id' => $isReply ? '' : $sentMessage->getMessageId(),
                     'debug' => $sentMessage->getDebug(),
+                    'envelope_original' => serialize($sentMessage->getEnvelope()),
                     'is_sent' => 1,
                 ],
                 [
