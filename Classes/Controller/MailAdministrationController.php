@@ -73,7 +73,7 @@ class MailAdministrationController
         }
         $mailMess = GeneralUtility::makeInstance(Mailer::class);
 
-        $message = unserialize($row['email_serialized'], ['allowed_classes' => [Email::class, RawMessage::class]]);
+        $message = unserialize($row['email_serialized']);
         $envelope = unserialize($row['envelope_original']);
         $mailMess->send($message, $envelope);
 

@@ -24,13 +24,14 @@
                 <table class="table table-striped table-hover">
                     <thead>
                     <tr>
-                        <th class="align-top"></th>
+                        <th class="align-top">ID</th>
                         <th class="align-top">Date</th>
+                        <th class="align-top"></th>
                         <th class="align-top">Sent</th>
                         <th class="align-top">Subject</th>
                         <th class="align-top">To</th>
                         <th class="align-top">From</th>
-                        <th class="align-top" colspan="2">Actions</th>
+                        <th class="align-top col-control">Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -44,6 +45,24 @@
                             </td>
                             <td>
                                 <f:format.date date="@{mail.crdate}" format="d.m.Y H:i:s"/>
+                            </td>
+                            <td class="nowrap">
+                                <div class="btn-group">
+                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="Plain"
+                                       data-title="Preview in Plain"
+                                       data-bs-content=""
+                                       data-size="large"
+                                       data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'plain'})}">
+                                        <core:icon identifier="sentmails-type-text"/>
+                                    </a>
+                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="HTML"
+                                       data-title="Preview in HTML"
+                                       data-bs-content=""
+                                       data-size="large"
+                                       data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'html'})}">
+                                        <core:icon identifier="sentmails-type-html"/>
+                                    </a>
+                                </div>
                             </td>
                             <td>
                                 <f:if condition="{mail.is_sent}">
@@ -74,48 +93,45 @@
                             <td>
                                 <f:render section="mails" arguments="{mails:mail.sender}"/>
                             </td>
+
                             <td class="col-control nowrap">
                                 <div class="btn-group">
-                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="Plain"
-                                       data-title="Preview in Plain"
-                                       data-bs-content=""
-                                       data-size="large"
-                                       data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'plain'})}">
-                                        <core:icon identifier="sentmails-type-text"/>
+                                    <a href="{be:moduleLink(route:'sentmail_admin.resend',arguments: {mail:mail.uid})}"
+                                       data-title="Resend?" data-content="Really resend?" data-severity="warning"
+                                       class="t3js-modal-trigger btn btn-sm btn-default">
+                                        <core:icon identifier="actions-refresh"/>
+                                        Resend
                                     </a>
-                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="HTML"
-                                       data-title="Preview in HTML"
-                                       data-bs-content=""
-                                       data-size="large"
-                                       data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'html'})}">
-                                        <core:icon identifier="sentmails-type-html"/>
+                                    <a href="{be:moduleLink(route:'sentmail_admin.forward',arguments: {mail:mail.uid})}"
+                                       class="btn btn-sm btn-default">
+                                        <core:icon identifier="sentmails-forward"/>
+                                        Forward
                                     </a>
+
+                                    <div class="btn-sm btn btn-default dropdown">
+                                        <button type="button" class="dropdown-toggle dropdown-toggle-link t3js-multi-record-selection-check-actions-toggle" data-bs-toggle="dropdown" data-bs-boundary="window" aria-expanded="false">
+                                            <core:icon identifier="actions-menu-alternative" size="small" />
+                                        </button>
+                                        <ul class="dropdown-menu t3js-multi-record-selection-check-actions">
+                                            <li>
+                                                <a class="t3js-modal-trigger modal-size-large dropdown-item"
+                                                   data-title="Debug"
+                                                   data-bs-content=""
+                                                   data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'debug'})}">
+                                                    Debug info
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="t3js-modal-trigger modal-size-large dropdown-item"
+                                                   data-title="Debug"
+                                                   data-bs-content=""
+                                                   data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'settings'})}">
+                                                    Settings
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </td>
-                            <td class="col-control nowrap">
-                                <div class="btn-group">
-                                <a href="{be:moduleLink(route:'sentmail_admin.resend',arguments: {mail:mail.uid})}"
-                                   class="btn btn-sm btn-default">
-                                    <core:icon identifier="actions-refresh"/>
-                                    Resend
-                                </a>
-                                <a href="{be:moduleLink(route:'sentmail_admin.forward',arguments: {mail:mail.uid})}"
-                                   class="btn btn-sm btn-default">
-                                    <core:icon identifier="sentmails-forward"/>
-                                    Forward
-                                </a>
-                                <a class="t3js-modal-trigger modal-size-large btn-sm btn btn-default" data-title="Debug"
-                                   data-bs-content=""
-                                   data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'debug'})}">
-                                    <core:icon identifier="sentmails-debug"/>
-                                    Debug
-                                </a>
-                                <a class="t3js-modal-trigger modal-size-large btn-sm btn btn-default" data-title="Debug"
-                                   data-bs-content=""
-                                   data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'settings'})}">
-                                    Settings
-                                </a>
-</div>
                             </td>
                         </tr>
                     </f:for>
