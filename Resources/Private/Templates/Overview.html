@@ -16,7 +16,7 @@
         }"
     />
 
-    <h1>Mails</h1>
+    <h1>{f:translate(key:'overview.header',extensionName: 'sent_mails')}</h1>
 
     <f:if condition="{mails}">
         <f:then>
@@ -25,13 +25,13 @@
                     <thead>
                     <tr>
                         <th class="align-top">ID</th>
-                        <th class="align-top">Date</th>
+                        <th class="align-top">{f:translate(key:'field.date',extensionName: 'sent_mails')}</th>
                         <th class="align-top"></th>
-                        <th class="align-top">Sent</th>
-                        <th class="align-top">Subject</th>
-                        <th class="align-top">To</th>
-                        <th class="align-top">From</th>
-                        <th class="align-top col-control">Actions</th>
+                        <th class="align-top">{f:translate(key:'field.sent',extensionName: 'sent_mails')}</th>
+                        <th class="align-top">{f:translate(key:'field.subject',extensionName: 'sent_mails')}</th>
+                        <th class="align-top">{f:translate(key:'field.to',extensionName: 'sent_mails')}</th>
+                        <th class="align-top">{f:translate(key:'field.from',extensionName: 'sent_mails')}</th>
+                        <th class="align-top col-control"></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -48,15 +48,15 @@
                             </td>
                             <td class="nowrap">
                                 <div class="btn-group">
-                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="Plain"
-                                       data-title="Preview in Plain"
+                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="{f:translate(key:'preview.plain',extensionName: 'sent_mails')}"
+                                       data-title="{f:translate(key:'preview.plain',extensionName: 'sent_mails')}"
                                        data-bs-content=""
                                        data-size="large"
                                        data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'plain'})}">
                                         <core:icon identifier="sentmails-type-text"/>
                                     </a>
-                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="HTML"
-                                       data-title="Preview in HTML"
+                                    <a class="t3js-modal-trigger modal-size-large btn btn-default" title="{f:translate(key:'preview.html',extensionName: 'sent_mails')}"
+                                       data-title="{f:translate(key:'overview.header',extensionName: 'sent_mails')}"
                                        data-bs-content=""
                                        data-size="large"
                                        data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'html'})}">
@@ -79,13 +79,13 @@
                                 <f:render section="mails" arguments="{mails:mail.receiver}"/>
                                 <f:if condition="{mail.bcc}">
                                     <div>
-                                        <strong>BCC</strong><br>
+                                        <strong>{f:translate(key:'field.bcc',extensionName: 'sent_mails')}</strong><br>
                                         <f:render section="mails" arguments="{mails:mail.bcc}"/>
                                     </div>
                                 </f:if>
                                 <f:if condition="{mail.cc}">
                                     <div>
-                                        <strong>CC</strong><br>
+                                        <strong>{f:translate(key:'field.cc',extensionName: 'sent_mails')}</strong><br>
                                         <f:render section="mails" arguments="{mails:mail.cc}"/>
                                     </div>
                                 </f:if>
@@ -97,15 +97,15 @@
                             <td class="col-control nowrap">
                                 <div class="btn-group">
                                     <a href="{be:moduleLink(route:'sentmail_admin.resend',arguments: {mail:mail.uid})}"
-                                       data-title="Resend?" data-content="Really resend?" data-severity="warning"
+                                       data-title="{f:translate(key:'action.resend.title',extensionName: 'sent_mails')}" data-content="{f:translate(key:'action.resend.text',extensionName: 'sent_mails')}" data-severity="warning"
                                        class="t3js-modal-trigger btn btn-sm btn-default">
                                         <core:icon identifier="actions-refresh"/>
-                                        Resend
+                                        {f:translate(key:'action.resend',extensionName: 'sent_mails')}
                                     </a>
                                     <a href="{be:moduleLink(route:'sentmail_admin.forward',arguments: {mail:mail.uid})}"
                                        class="btn btn-sm btn-default">
                                         <core:icon identifier="sentmails-forward"/>
-                                        Forward
+                                        {f:translate(key:'action.forward',extensionName: 'sent_mails')}
                                     </a>
 
                                     <div class="btn-sm btn btn-default dropdown">
@@ -118,7 +118,7 @@
                                                    data-title="Debug"
                                                    data-bs-content=""
                                                    data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'debug'})}">
-                                                    Debug info
+                                                    {f:translate(key:'action.debug',extensionName: 'sent_mails')}
                                                 </a>
                                             </li>
                                             <li>
@@ -126,7 +126,7 @@
                                                    data-title="Debug"
                                                    data-bs-content=""
                                                    data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'settings'})}">
-                                                    Settings
+                                                    {f:translate(key:'action.settings',extensionName: 'sent_mails')}
                                                 </a>
                                             </li>
                                         </ul>

@@ -15,8 +15,8 @@
         }"
     />
 
-    <h1>Forward</h1>
-    <f:be.infobox state="-1">Be careful with forwarding possible sensitive information!</f:be.infobox>
+    <h1>{f:translate(key:'forward.header',extensionName: 'sent_mails')}</h1>
+    <f:be.infobox state="-1">{f:translate(key:'forward.warning',extensionName: 'sent_mails')}</f:be.infobox>
 
     <div class="row">
         <div class="col-md-4">
@@ -28,17 +28,17 @@
                 <input type="hidden" name="submit" value="1"/>
 
                 <div class="form-group">
-                    <label for="toEmail">To Email</label>
+                    <label for="toEmail">{f:translate(key:'forward.toEmail',extensionName: 'sent_mails')}</label>
                     <input type="email" class="form-control" id="toEmail" name="toEmail" value="{params.toEmail}"
                            required>
                 </div>
                 <div class="form-group">
-                    <label for="toName">To Name</label>
+                    <label for="toName">{f:translate(key:'forward.toName',extensionName: 'sent_mails')}</label>
                     <input type="text" class="form-control" id="toName" name="toName" value="{params.toName}"
                            required>
                 </div>
                 <div class="form-group">
-                    <label for="subject">Subject</label>
+                    <label for="subject">{f:translate(key:'forward.subject',extensionName: 'sent_mails')}</label>
                     <input type="text" class="form-control" id="subject" name="subject"
                            value="{f:if(condition:params.subject,then:params.subject,else:mail.subject)}" required>
                 </div>
@@ -51,13 +51,13 @@
         <div class="col-md-8">
             <table class="table table-condensed table striped">
                 <tr>
-                    <th>Date</th>
+                    <th>{f:translate(key:'field.date',extensionName: 'sent_mails')}</th>
                     <td>
                         <f:format.date date="@{mail.crdate}" format="d.m.Y H:i:s"/>
                     </td>
                 </tr>
                 <tr>
-                    <th>Subject</th>
+                    <th>{f:translate(key:'field.subject',extensionName: 'sent_mails')}</th>
                     <td>{mail.subject}</td>
                 </tr>
                 <tr>
@@ -68,7 +68,7 @@
                 </tr>
                 <f:if condition="{mail.bcc}">
                     <tr>
-                        <th>BCC</th>
+                        <th>{f:translate(key:'field.bcc',extensionName: 'sent_mails')}</th>
                         <td>
                             <f:render section="mails" arguments="{mails:mail.bcc}"/>
                         </td>
@@ -76,7 +76,7 @@
                 </f:if>
                 <f:if condition="{mail.cc}">
                     <tr>
-                        <th>CC</th>
+                        <th>{f:translate(key:'field.cc',extensionName: 'sent_mails')}</th>
                         <td>
                             <f:render section="mails" arguments="{mails:mail.cc}"/>
                         </td>
@@ -85,21 +85,19 @@
             </table>
 
             <div class="btn-group">
-                <a class="t3js-modal-trigger modal-size-large btn btn-default" title="Plain"
-                   data-title="Preview in Plain"
+                <a class="t3js-modal-trigger modal-size-large btn btn-default" title="{f:translate(key:'preview.plain',extensionName: 'sent_mails')}"
+                   data-title="{f:translate(key:'preview.plain',extensionName: 'sent_mails')}"
                    data-bs-content=""
                    data-size="large"
                    data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'plain'})}">
                     <core:icon identifier="sentmails-type-text"/>
-                    Plain
                 </a>
-                <a class="t3js-modal-trigger modal-size-large btn btn-default" title="HTML"
-                   data-title="Preview in HTML"
+                <a class="t3js-modal-trigger modal-size-large btn btn-default" title="{f:translate(key:'preview.html',extensionName: 'sent_mails')}"
+                   data-title="{f:translate(key:'overview.header',extensionName: 'sent_mails')}"
                    data-bs-content=""
                    data-size="large"
                    data-url="{be:moduleLink(route:'sentmail_preview',arguments: {mail:mail.uid,type:'html'})}">
                     <core:icon identifier="sentmails-type-html"/>
-                    HTML
                 </a>
             </div>
         </div>

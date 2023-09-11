@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns:t3="http://typo3.org/schemas/xliff" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-    <file source-language="en" original="messages" datatype="plaintext" product-name="sent_mails" date="2023-09-05T13:38:27+02:00">
+    <file source-language="en" original="messages" datatype="plaintext" product-name="sent_mails" date="2023-09-11T08:18:05+02:00">
         <header></header>
         <body>
             <trans-unit id="from" resname="from">
@@ -30,17 +30,101 @@
             <trans-unit id="debug" resname="debug">
                 <source>Debug</source>
             </trans-unit>
-            <trans-unit id="module.title">
-                <source>Mails</source>
+            <trans-unit id="module.title" resname="module.title">
+                <source>Mail Log</source>
             </trans-unit>
-            <trans-unit id="module.description">
-                <source>Sent Mails</source>
+            <trans-unit id="module.description" resname="module.description">
+                <source>Log of sent Mails</source>
             </trans-unit>
-            <trans-unit id="module.shortDescription">
-                <source>Module to list sent mails and option to resend it</source>
+            <trans-unit id="module.shortDescription" resname="module.shortDescription">
+                <source>Module to list sent mails and option to resend &amp; forward them</source>
             </trans-unit>
-            <trans-unit id="module.sendTestMail">
+            <trans-unit id="module.sendTestMail" resname="module.sendTestMail">
                 <source>Send test mail</source>
+            </trans-unit>
+            <trans-unit id="overview.header" resname="overview.header">
+                <source>Sent mails</source>
+            </trans-unit>
+            <trans-unit id="field.date" resname="field.date">
+                <source>Date</source>
+            </trans-unit>
+            <trans-unit id="field.sent" resname="field.sent">
+                <source>Sent</source>
+            </trans-unit>
+            <trans-unit id="field.subject" resname="field.subject">
+                <source>Subject</source>
+            </trans-unit>
+            <trans-unit id="field.to" resname="field.to">
+                <source>To</source>
+            </trans-unit>
+            <trans-unit id="field.bcc" resname="field.bcc">
+                <source>BCC</source>
+            </trans-unit>
+            <trans-unit id="field.cc" resname="field.cc">
+                <source>CC</source>
+            </trans-unit>
+            <trans-unit id="field.from" resname="field.from">
+                <source>From</source>
+            </trans-unit>
+            <trans-unit id="preview.plain" resname="preview.plain">
+                <source>Plain Preview</source>
+            </trans-unit>
+            <trans-unit id="preview.html" resname="preview.html">
+                <source>HTML Preview</source>
+            </trans-unit>
+            <trans-unit id="action.resend" resname="action.resend">
+                <source>Resend</source>
+            </trans-unit>
+            <trans-unit id="action.resend.title" resname="action.resend.title">
+                <source>Really resend?</source>
+            </trans-unit>
+            <trans-unit id="action.resend.text" resname="action.resend.text">
+                <source>Dou you really want to resend the mail to the recipient?</source>
+            </trans-unit>
+            <trans-unit id="action.forward" resname="action.forward">
+                <source>Forward</source>
+            </trans-unit>
+            <trans-unit id="action.debug" resname="action.debug">
+                <source>Debug Information</source>
+            </trans-unit>
+            <trans-unit id="action.settings" resname="action.settings">
+                <source>Settings</source>
+            </trans-unit>
+            <trans-unit id="forward.header" resname="forward.header">
+                <source>Forward to mail to alternate email address</source>
+            </trans-unit>
+            <trans-unit id="forward.warning" resname="forward.warning">
+                <source>Be careful with forwarding possible sensitive information!</source>
+            </trans-unit>
+            <trans-unit id="forward.toName" resname="forward.toName">
+                <source>Name</source>
+            </trans-unit>
+            <trans-unit id="forward.toEmail" resname="forward.toEmail">
+                <source>Email address</source>
+            </trans-unit>
+            <trans-unit id="forward.subject" resname="forward.subject">
+                <source>Subject</source>
+            </trans-unit>
+            <trans-unit id="test.header" resname="test.header">
+                <source>Send test email</source>
+            </trans-unit>
+            <trans-unit id="test.fromName" resname="test.fromName">
+                <source>From Name</source>
+            </trans-unit>
+            <trans-unit id="test.fromEmail" resname="test.fromEmail">
+                <source>From Email</source>
+            </trans-unit>
+            <trans-unit id="test.plain" resname="test.plain">
+                <source>Plain Message</source>
+            </trans-unit>
+            <trans-unit id="test.html" resname="test.html">
+                <source>HTML Message</source>
+            </trans-unit>
+            <trans-unit id="test.submit" resname="test.submit">
+                <source>Submit</source>
+            </trans-unit>
+            <trans-unit id="preview.noHtmlContent" resname="preview.noHtmlContent">
+                <source>It seems that no HTML part was sent with this mail!</source>
             </trans-unit>
         </body>
     </file>

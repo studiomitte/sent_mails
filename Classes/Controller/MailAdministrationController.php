@@ -5,10 +5,8 @@ namespace StudioMitte\SentMails\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Mime\RawMessage;
 use TYPO3\CMS\Backend\Attribute\Controller;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
@@ -20,14 +18,15 @@ use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Mail\FluidEmail;
 use TYPO3\CMS\Core\Mail\Mailer;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\MailUtility;
 use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
-use TYPO3\CMS\Reactions\Repository\ReactionDemand;
 use ZBateson\MailMimeParser\Message;
 
 #[Controller]
@@ -136,7 +135,11 @@ class MailAdministrationController
                 break;
             case 'html':
                 $content = $message->getHtmlContent();
-                $content = '<iframe style="width:100%;height:100%;border:0" srcdoc="' . (htmlentities($content)) . '"></iframe>';
+                if (!$content) {
+                    $content = '<div class="alert alert-warning">' . $this->getLanguageService()->sL('LLL:EXT:sent_mails/Resources/Private/Language/locallang.xlf:preview.noHtmlContent') . '</div>';
+                } else {
+                    $content = '<iframe style="width:100%;height:100%;border:0" srcdoc="' . (htmlentities($content)) . '"></iframe>';
+                }
                 break;
             case 'debug':
                 $content = '<pre>' . $mail['debug'] . '</pre>';
@@ -155,7 +158,14 @@ class MailAdministrationController
     public function testAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getParsedBody();
+        if (!isset($params['fromName'])) {
+            $params['fromName'] = MailUtility::getSystemFromName();
+        }
+        if (!isset($params['fromEmail'])) {
+            $params['fromEmail'] = MailUtility::getSystemFromAddress();
+        }
         $view = $this->moduleTemplateFactory->create($request);
+        $view->assign('params', $params);
 
         if ($params['submit'] ?? false) {
             try {
@@ -176,10 +186,7 @@ class MailAdministrationController
                 $this->addFlashMessage('Mail sent', '', ContextualFeedbackSeverity::OK);
                 return new RedirectResponse($this->uriBuilder->buildUriFromRoute('sentmail_admin'));
             } catch (\Exception $e) {
-                $view->assignMultiple([
-                    'error' => $e,
-                    'params' => $params,
-                ]);
+                $view->assign('error', $e);
             }
         }
 
@@ -233,7 +240,7 @@ class MailAdministrationController
         return new RedirectResponse($this->uriBuilder->buildUriFromRoute('sentmail_admin'));
     }
 
-    private function getLanguageService()
+    private function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
     }

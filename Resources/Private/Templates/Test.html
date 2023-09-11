@@ -9,7 +9,7 @@
 
 <f:section name="Content">
 
-    <h1>Test</h1>
+    <h1>{f:translate(key:'test.header',extensionName: 'sent_mails')}</h1>
 
     <f:if condition="{error}">
         <f:be.infobox state="2" title="Error">{error.message}</f:be.infobox>
@@ -19,30 +19,30 @@
         <input type="hidden" name="submit" value="1"/>
 
         <div class="form-group">
-            <label for="fromName">From name</label>
+            <label for="fromName">{f:translate(key:'test.fromName',extensionName: 'sent_mails')}</label>
             <input type="text" class="form-control" id="fromName" name="fromName" value="{params.fromName}" required>
         </div>
         <div class="form-group">
-            <label for="fromEmail">From email</label>
+            <label for="fromEmail">{f:translate(key:'test.fromEmail',extensionName: 'sent_mails')}</label>
             <input type="email" class="form-control" id="fromEmail" name="fromEmail" value="{params.fromEmail}" required>
         </div>
         <div class="form-group">
-            <label for="subject">Subject</label>
+            <label for="subject">{f:translate(key:'field.subject',extensionName: 'sent_mails')}</label>
             <input type="text" class="form-control" id="subject" name="subject" value="{params.subject}" required>
         </div>
 
         <div class="form-group">
-            <label for="plain">Plain text</label>
-            <textarea class="form-control" id="plain" name="plain" required>{params.plain}"</textarea>
+            <label for="plain">{f:translate(key:'test.plain',extensionName: 'sent_mails')}</label>
+            <textarea class="form-control" id="plain" name="plain" required>{params.plain}</textarea>
         </div>
 
         <div class="form-group">
-            <label for="html">HTML</label>
+            <label for="html">{f:translate(key:'test.html',extensionName: 'sent_mails')}</label>
             <textarea class="form-control" id="html" name="html" placeholder="<h1>A header</h1>">{params.html}</textarea>
         </div>
 
         <div class="form-group">
-            <f:form.submit value="Submit" class="btn btn-primary"/>
+            <f:form.submit value="{f:translate(key:'test.submit',extensionName: 'sent_mails')}" class="btn btn-primary"/>
         </div>
     </form>
 
