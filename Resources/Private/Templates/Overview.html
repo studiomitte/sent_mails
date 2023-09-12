@@ -141,11 +141,8 @@
         </f:then>
         <f:else>
             <f:be.infobox state="-1"
-                          title="{f:translate(key: 'LLL:EXT:backend/Resources/Private/Language/locallang_siteconfiguration.xlf:overview.noPages.title')}">
-                <p>
-                    <f:translate
-                            key="LLL:EXT:backend/Resources/Private/Language/locallang_siteconfiguration.xlf:overview.noPages.message"/>
-                </p>
+                          title="{f:translate(key:'overview.nologs.title',extensionName: 'sent_mails')}">
+                <p>{f:translate(key:'overview.nologs.description',extensionName: 'sent_mails')}</p>
             </f:be.infobox>
         </f:else>
     </f:if>

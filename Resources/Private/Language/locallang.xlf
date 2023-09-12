@@ -114,17 +114,23 @@
             <trans-unit id="test.fromEmail" resname="test.fromEmail">
                 <source>From Email</source>
             </trans-unit>
-            <trans-unit id="test.plain" resname="test.plain">
-                <source>Plain Message</source>
+            <trans-unit id="test.content" resname="test.plain">
+                <source>Content</source>
             </trans-unit>
-            <trans-unit id="test.html" resname="test.html">
-                <source>HTML Message</source>
+            <trans-unit id="test.headline" resname="test.headline">
+                <source>Headline</source>
             </trans-unit>
             <trans-unit id="test.submit" resname="test.submit">
                 <source>Submit</source>
             </trans-unit>
             <trans-unit id="preview.noHtmlContent" resname="preview.noHtmlContent">
                 <source>It seems that no HTML part was sent with this mail!</source>
+            </trans-unit>
+            <trans-unit id="overview.nologs.title" resname="overview.nologs.title">
+                <source>No logs found!</source>
+            </trans-unit>
+            <trans-unit id="overview.nologs.description" resname="overview.nologs.description">
+                <source>No mails until know logged.</source>
             </trans-unit>
         </body>
     </file>

@@ -52,7 +52,7 @@ class MailAdministrationController
             'uriBuilder' => $this->uriBuilder,
         ]);
 
-        $this->registerDocHeaderButtons($view, $request->getAttribute('normalizedParams')->getRequestUri());
+        $this->registerDocHeaderButtons($view, $request);
         return $view->renderResponse('Overview.html');
     }
 
@@ -157,30 +157,29 @@ class MailAdministrationController
 
     public function testAction(ServerRequestInterface $request): ResponseInterface
     {
-        $params = $request->getParsedBody();
-        if (!isset($params['fromName'])) {
-            $params['fromName'] = MailUtility::getSystemFromName();
-        }
-        if (!isset($params['fromEmail'])) {
-            $params['fromEmail'] = MailUtility::getSystemFromAddress();
-        }
+        $params = $this->getTestArguments($request);
+
         $view = $this->moduleTemplateFactory->create($request);
+        $this->registerDocHeaderButtons($view, $request);
         $view->assign('params', $params);
 
         if ($params['submit'] ?? false) {
             try {
-
-                $mailer = GeneralUtility::makeInstance(Mailer::class);
                 $email = GeneralUtility::makeInstance(FluidEmail::class);
+                $email->setRequest($request);
                 $email->subject($params['subject']);
-                $email->text($params['plain']);
-                $email->html($params['html'] ?? '');
+
+                $email->assignMultiple([
+                    'headline' => $params['headline'] ?? '',
+                    'content' => $params['content'],
+                ]);
                 $email->to(new Address($params['fromEmail'], $params['fromName']));
 //            $email->cc(new Address('cc@example.org', 'Mail as CC'));
 //            $email->bcc(...[
 //                new Address('bcc1@example.org', 'Mail as BCC1'),
 //                new Address('bcc2@example.org', 'Mail as BCC2'),
 //            ]);
+                $mailer = GeneralUtility::makeInstance(Mailer::class);
                 $mailer->send($email);
 
                 $this->addFlashMessage('Mail sent', '', ContextualFeedbackSeverity::OK);
@@ -212,7 +211,7 @@ class MailAdministrationController
     }
 
 
-    protected function registerDocHeaderButtons(ModuleTemplate $view, string $requestUri): void
+    protected function registerDocHeaderButtons(ModuleTemplate $view, ServerRequestInterface $request): void
     {
         $languageService = $this->getLanguageService();
         $buttonBar = $view->getDocHeaderComponent()->getButtonBar();
@@ -226,6 +225,13 @@ class MailAdministrationController
             ->setTitle($languageService->sL('LLL:EXT:sent_mails/Resources/Private/Language/locallang.xlf:module.sendTestMail'))
             ->setIcon($this->iconFactory->getIcon('actions-plus', Icon::SIZE_SMALL));
         $buttonBar->addButton($newRecordButton, ButtonBar::BUTTON_POSITION_LEFT, 10);
+
+        $reloadButton = $buttonBar->makeLinkButton()
+            ->setHref($request->getAttribute('normalizedParams')->getRequestUri())
+            ->setDataAttributes(['action' => 'reload'])
+            ->setTitle($languageService->sL('LLL:EXT:recycler/Resources/Private/Language/locallang.xlf:button.reload'))
+            ->setIcon($this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL));
+        $buttonBar->addButton($reloadButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }
 
     protected function getMailRow(ServerRequestInterface $request): array
@@ -243,5 +249,17 @@ class MailAdministrationController
     private function getLanguageService(): LanguageService
     {
         return $GLOBALS['LANG'];
+    }
+
+    protected function getTestArguments(ServerRequestInterface $request): array
+    {
+        $params = $request->getParsedBody() ?? [];
+        $params['fromName'] = $params['fromName'] ?? MailUtility::getSystemFromName();
+        $params['fromEmail'] = $params['fromEmail'] ?? MailUtility::getSystemFromAddress();
+        $params['subject'] = $params['subject'] ?? 'Testmail at ' . BackendUtility::datetime(time());
+        $params['headline'] = $params['headline'] ?? 'Hello User';
+
+
+        return $params;
     }
 }

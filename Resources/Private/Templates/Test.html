@@ -24,7 +24,8 @@
         </div>
         <div class="form-group">
             <label for="fromEmail">{f:translate(key:'test.fromEmail',extensionName: 'sent_mails')}</label>
-            <input type="email" class="form-control" id="fromEmail" name="fromEmail" value="{params.fromEmail}" required>
+            <input type="email" class="form-control" id="fromEmail" name="fromEmail" value="{params.fromEmail}"
+                   required>
         </div>
         <div class="form-group">
             <label for="subject">{f:translate(key:'field.subject',extensionName: 'sent_mails')}</label>
@@ -32,17 +33,18 @@
         </div>
 
         <div class="form-group">
-            <label for="plain">{f:translate(key:'test.plain',extensionName: 'sent_mails')}</label>
-            <textarea class="form-control" id="plain" name="plain" required>{params.plain}</textarea>
+            <label for="headline">{f:translate(key:'test.headline',extensionName: 'sent_mails')}</label>
+            <input type="text" class="form-control" id="headline" name="headline" value="{params.headline}" required>
         </div>
 
         <div class="form-group">
-            <label for="html">{f:translate(key:'test.html',extensionName: 'sent_mails')}</label>
-            <textarea class="form-control" id="html" name="html" placeholder="<h1>A header</h1>">{params.html}</textarea>
+            <label for="content">{f:translate(key:'test.content',extensionName: 'sent_mails')}</label>
+            <textarea class="form-control" id="content" name="content" required>{params.content}</textarea>
         </div>
 
         <div class="form-group">
-            <f:form.submit value="{f:translate(key:'test.submit',extensionName: 'sent_mails')}" class="btn btn-primary"/>
+            <f:form.submit value="{f:translate(key:'test.submit',extensionName: 'sent_mails')}"
+                           class="btn btn-primary"/>
         </div>
     </form>
 
