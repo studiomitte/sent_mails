@@ -1,6 +1,6 @@
 
 
-CREATE TABLE tx_mailsent_mail (
+CREATE TABLE tx_sentmail_mail (
     from_name varchar(255) DEFAULT '' NOT NULL,
     from_email varchar(255) DEFAULT '' NOT NULL,
     receiver text DEFAULT '' NOT NULL,

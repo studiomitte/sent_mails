@@ -39,8 +39,8 @@ class BeforeMailSentEventListener
         $isReply = get_class($originalMessage) === RawMessage::class;
 //        DebuggerUtility::var_dump($isReply, '$isReply');
 //
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_mailsent_mail');
-        $connection->insert('tx_mailsent_mail', [
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_sentmail_mail');
+        $connection->insert('tx_sentmail_mail', [
             'crdate' => time(),
             'subject' => $isReply ? '' : $originalMessage->getHeaders()->getHeaderBody('Subject'),
             'sender' => $this->convertAddresses($originalMessage->getFrom()),
@@ -56,7 +56,7 @@ class BeforeMailSentEventListener
             'settings' => json_encode($this->getSettings()),
         ]);
         $sentMessage->getHeaders()->remove('X-SentMail_ID');
-        $sentMessage->getHeaders()->addTextHeader('X-SentMail_ID', $connection->lastInsertId('tx_mailsent_mail'));
+        $sentMessage->getHeaders()->addTextHeader('X-SentMail_ID', $connection->lastInsertId('tx_sentmail_mail'));
     }
 
     /**

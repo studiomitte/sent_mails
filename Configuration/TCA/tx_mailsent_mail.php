@@ -10,7 +10,7 @@ return [
         'delete' => 'deleted',
         'enablecolumns' => [
         ],
-        'iconfile' => 'EXT:sent_mails/Resources/Public/Icons/tx_mailsent_mail.svg'
+        'iconfile' => 'EXT:sent_mails/Resources/Public/Icons/tx_sentmail_mail.svg'
     ],
     'types' => [
         '1' => ['showitem' => 'crdate,subject,

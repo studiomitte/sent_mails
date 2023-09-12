@@ -203,10 +203,10 @@ class MailAdministrationController
 
     private function getMails(): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_mailsent_mail');
+        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_sentmail_mail');
         return $queryBuilder
             ->select('*')
-            ->from('tx_mailsent_mail')
+            ->from('tx_sentmail_mail')
             ->orderBy('crdate', 'desc')
             ->executeQuery()->fetchAllAssociative();
     }
@@ -231,7 +231,7 @@ class MailAdministrationController
     protected function getMailRow(ServerRequestInterface $request): array
     {
         $id = (int)($request->getQueryParams()['mail'] ?? 0);
-        $row = BackendUtility::getRecord('tx_mailsent_mail', $id);
+        $row = BackendUtility::getRecord('tx_sentmail_mail', $id);
         return (array)$row;
     }
 

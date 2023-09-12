@@ -38,7 +38,7 @@
                     <f:for each="{mails}" as="mail">
                         <tr>
                             <td>
-                                <be:link.editRecord uid="{mail.uid}" table="tx_mailsent_mail"
+                                <be:link.editRecord uid="{mail.uid}" table="tx_sentmail_mail"
                                                     returnUrl="{be:moduleLink(route:'sentmail_admin')}">
                                     {mail.uid}
                                 </be:link.editRecord>

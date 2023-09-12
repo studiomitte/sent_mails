@@ -23,7 +23,7 @@ class AfterMailSentEventListener
         $transport = $mailer->getTransport();
         $sentMessage = $mailer->getSentMessage();
         if (!$sentMessage) {
-            die('xx');
+            return;
         }
         $originalMessage = $sentMessage->getOriginalMessage();
         $sentMailLogCustomId = $originalMessage->getHeaders()->getHeaderBody('X-SentMail_Custom');
@@ -40,9 +40,9 @@ class AfterMailSentEventListener
         $logRow = $this->getLogRecord((int)$sentMailLogId, $sentMailLogCustomId);
 //        DebuggerUtility::var_dump($logRow, 'logrow');
 
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_mailsent_mail');
+        $connection = $this->getConnection();
         if ($logRow) {
-            $connection->update('tx_mailsent_mail',
+            $connection->update('tx_sentmail_mail',
                 [
                     'message_id' => $isReply ? '' : $sentMessage->getMessageId(),
                     'debug' => $sentMessage->getDebug(),
@@ -66,8 +66,8 @@ class AfterMailSentEventListener
 //        DebuggerUtility::var_dump($sentMessage, 'sent');
 //
 //        die;
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_mailsent_mail');
-        $connection->insert('tx_mailsent_mail',
+        $connection = $this->getConnection();
+        $connection->insert('tx_sentmail_mail',
 //        DebuggerUtility::var_dump(
             [
                 'pid' => 11,
@@ -91,11 +91,11 @@ class AfterMailSentEventListener
 
     protected function getLogRecord(int $id, string $customId): array
     {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_mailsent_mail');
+        $queryBuilder = $this->getConnection()->createQueryBuilder();
 
         return (array)$queryBuilder
             ->select('*')
-            ->from('tx_mailsent_mail')
+            ->from('tx_sentmail_mail')
             ->where(
                 $queryBuilder->expr()->eq('uid', $queryBuilder->createNamedParameter($id, Connection::PARAM_INT)),
 //                $queryBuilder->expr()->eq('message_id', $queryBuilder->createNamedParameter($customId)),
@@ -103,5 +103,10 @@ class AfterMailSentEventListener
             ->setMaxResults(1)
             ->executeQuery()
             ->fetchAssociative();
+    }
+
+    private function getConnection(): Connection
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_sentmail_mail');
     }
 }
