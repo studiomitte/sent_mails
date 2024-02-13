@@ -36,7 +36,7 @@
                     </thead>
                     <tbody>
                     <f:for each="{mails}" as="mail">
-                        <tr>
+                        <tr class="{f:if(condition:mail.is_sent,then:'',else:'danger')}">
                             <td>
                                 <be:link.editRecord uid="{mail.uid}" table="tx_sentmail_mail"
                                                     returnUrl="{be:moduleLink(route:'sentmail_admin')}">
