@@ -5,6 +5,7 @@ namespace StudioMitte\SentMails\Controller;
 
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use StudioMitte\SentMails\Repository\MailRepository;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use TYPO3\CMS\Backend\Attribute\Controller;
@@ -13,7 +14,6 @@ use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\HtmlResponse;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Imaging\Icon;
@@ -36,13 +36,14 @@ class MailAdministrationController
         protected readonly UriBuilder $uriBuilder,
         protected readonly ModuleTemplateFactory $moduleTemplateFactory,
         protected readonly IconFactory $iconFactory,
+        protected readonly MailRepository $mailRepository,
     )
     {
     }
 
     public function overviewAction(ServerRequestInterface $request): ResponseInterface
     {
-        $mails = $this->getMails();
+        $mails = $this->mailRepository->getMails();
         foreach ($mails as &$mail) {
             $this->enrichMail($mail);
         }
@@ -65,7 +66,7 @@ class MailAdministrationController
 
     public function resendAction(ServerRequestInterface $request): ResponseInterface
     {
-        $row = $this->getMailRow($request);
+        $row = $this->mailRepository->getMailRow((int)($request->getQueryParams()['mail'] ?? 0));
         if (!$row) {
             $this->addFlashMessage('No mail record found');
             return $this->getRedirectResponseToOverview();
@@ -83,7 +84,7 @@ class MailAdministrationController
     public function forwardAction(ServerRequestInterface $request): ResponseInterface
     {
         $params = $request->getParsedBody();
-        $mailRow = $this->getMailRow($request);
+        $mailRow = $this->mailRepository->getMailRow((int)($request->getQueryParams()['mail'] ?? 0));
         if (!$mailRow) {
             $this->addFlashMessage('No mail record found');
             return $this->getRedirectResponseToOverview();
@@ -121,7 +122,7 @@ class MailAdministrationController
 
     public function previewAction(ServerRequestInterface $request): ResponseInterface
     {
-        $mail = $this->getMailRow($request);
+        $mail = $this->mailRepository->getMailRow((int)($request->getQueryParams()['mail'] ?? 0));
         if (!$mail) {
             return new HtmlResponse('ERROR: No mail record found');
         }
@@ -200,17 +201,6 @@ class MailAdministrationController
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
-    private function getMails(): array
-    {
-        $queryBuilder = GeneralUtility::makeInstance(ConnectionPool::class)->getQueryBuilderForTable('tx_sentmail_mail');
-        return $queryBuilder
-            ->select('*')
-            ->from('tx_sentmail_mail')
-            ->orderBy('crdate', 'desc')
-            ->executeQuery()->fetchAllAssociative();
-    }
-
-
     protected function registerDocHeaderButtons(ModuleTemplate $view, ServerRequestInterface $request): void
     {
         $languageService = $this->getLanguageService();
@@ -234,13 +224,6 @@ class MailAdministrationController
         $buttonBar->addButton($reloadButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }
 
-    protected function getMailRow(ServerRequestInterface $request): array
-    {
-        $id = (int)($request->getQueryParams()['mail'] ?? 0);
-        $row = BackendUtility::getRecord('tx_sentmail_mail', $id);
-        return (array)$row;
-    }
-
     protected function getRedirectResponseToOverview(): RedirectResponse
     {
         return new RedirectResponse($this->uriBuilder->buildUriFromRoute('sentmail_admin'));
@@ -258,7 +241,6 @@ class MailAdministrationController
         $params['fromEmail'] = $params['fromEmail'] ?? MailUtility::getSystemFromAddress();
         $params['subject'] = $params['subject'] ?? 'Testmail at ' . BackendUtility::datetime(time());
         $params['headline'] = $params['headline'] ?? 'Hello User';
-
 
         return $params;
     }
