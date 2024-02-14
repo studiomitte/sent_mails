@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace StudioMitte\SentMails\EventListener;
 
+use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\RawMessage;
@@ -51,6 +52,7 @@ class BeforeMailSentEventListener
             'message_id' => $customId,
             'message' => $sentMessage->toString(),
             'original_message' => $originalMessage->toString(),
+            'envelope_original' => serialize($event->getEnvelope() ?: Envelope::create($originalMessage)),
             'internal_id' => $customId,
             'email_serialized' => $originalMessage instanceof Email ? serialize($originalMessage) : '',
             'settings' => json_encode($this->getSettings()),
