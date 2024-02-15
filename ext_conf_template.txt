@@ -1,0 +1,8 @@
+# cat=Feature; type=string; label=Search terms leading to rejection:List of search terms (separated by ###) which lead to rejecting the mail sending process
+rejectBySearchTerms =
+
+# cat=Feature; type=string; label=Mail API Username:Provide the username for the mail API
+mailAPIUsername =
+
+# cat=Feature; type=string; label=Mail API Password:Provide the password for the mail API
+mailAPIPassword =

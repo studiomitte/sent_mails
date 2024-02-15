@@ -12,7 +12,6 @@ use TYPO3\CMS\Core\Mail\Event\BeforeMailerSentMessageEvent;
 use TYPO3\CMS\Core\Utility\ArrayUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\StringUtility;
-use TYPO3\CMS\Extbase\Utility\DebuggerUtility;
 
 class BeforeMailSentEventListener
 {
@@ -36,10 +35,8 @@ class BeforeMailSentEventListener
 
         $sentMessage->getHeaders()->addTextHeader('X-SentMail_Custom', $customId);
 
-//        $originalMessage = $sentMessage->getOriginalMessage();
         $isReply = get_class($originalMessage) === RawMessage::class;
-//        DebuggerUtility::var_dump($isReply, '$isReply');
-//
+
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_sentmail_mail');
         $connection->insert('tx_sentmail_mail', [
             'crdate' => time(),

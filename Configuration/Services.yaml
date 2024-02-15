@@ -7,14 +7,25 @@ services:
   StudioMitte\SentMails\:
     resource: '../Classes/*'
 
+  StudioMitte\SentMails\Repository\MailRepository:
+    public: true
+
   StudioMitte\SentMails\EventListener\BeforeMailSentEventListener:
     tags:
       - name: event.listener
-        identifier: 'mail-sent-beforemailsent'
+        identifier: 'sent-mails/beforemailsent'
         event: TYPO3\CMS\Core\Mail\Event\BeforeMailerSentMessageEvent
 
   StudioMitte\SentMails\EventListener\AfterMailSentEventListener:
     tags:
       - name: event.listener
-        identifier: 'mail-sent-aftermailsent'
+        identifier: 'sent-mails/aftermailsent'
         event: TYPO3\CMS\Core\Mail\Event\AfterMailerSentMessageEvent
+
+  StudioMitte\SentMails\EventListener\MailMessageListener:
+    tags:
+      - name: event.listener
+        identifier: 'sent-mails/symfony/mailmessage-listener'
+        event: Symfony\Component\Mailer\Event\MessageEvent
+
+
