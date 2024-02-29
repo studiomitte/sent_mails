@@ -23,7 +23,7 @@ class Configuration
         try {
             $settings = GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('sent_mails');
 
-            $this->rejectBySearchTerms = GeneralUtility::trimExplode('|', $settings['rejectBySearchTerms'] ?? '', true);
+            $this->rejectBySearchTerms = GeneralUtility::trimExplode('###', $settings['rejectBySearchTerms'] ?? '', true);
             $this->mailAPIUsername = $settings['mailAPIUsername'] ?? '';
             $this->mailAPIPassword = $settings['mailAPIPassword'] ?? '';
         } catch (\Exception $e) {
