@@ -13,7 +13,7 @@ class Configuration
     /** @var string[] */
     public array $rejectBySearchTerms = [];
 
-    public int $mailInformationMaxTime = 60;
+    public int $mailInformationMaxTime = 360;
 
     public string $mailAPIUsername = '';
     public string $mailAPIPassword = '';
