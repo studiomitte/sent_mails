@@ -2,7 +2,7 @@
 
 return [
     'frontend' => [
-        'typo3/theme/logger' => [
+        'typo3/sent-mails/mailinformation' => [
             'target' => \StudioMitte\SentMails\Middleware\MailInformation::class,
             'before' => [
                 'typo3/cms-frontend/timetracker',
