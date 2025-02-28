@@ -34,3 +34,21 @@ Calling `/api/mailinformation?search=somecontent` will return a status informati
 It only allows to retrieve the information of mails sent in the last 60 seconds
 
 In combination with the feature "Reject sending mails" this can be used to check if a mail would have been sent or not.
+
+
+### Cleanup Emails
+
+Due to GDPR, emails should not be stored indefinitely. They can be deleted via command or Scheduler Task if they are older than x days. 
+By default, only successfully sent emails will be removed.
+
+Usage (delete mails older than 30 days):
+
+```bash
+typo3 sentmails:cleanup --days-threshold=30
+```
+
+To see all options use:
+```bash
+typo3 help sentmails:cleanup
+```
+
