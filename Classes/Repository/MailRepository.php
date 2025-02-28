@@ -28,11 +28,9 @@ class MailRepository
             ->executeQuery()->fetchAllAssociative();
     }
 
-    public function getMailRow(int $id): array
+    public function getMailRow(int $id): ?array
     {
-        $row = BackendUtility::getRecord(self::TABLE_NAME, $id);
-
-        return (array) $row;
+        return BackendUtility::getRecord(self::TABLE_NAME, $id);
     }
 
     public function getMailsBySearch(string $searchTerm): array
