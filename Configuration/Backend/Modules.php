@@ -3,7 +3,7 @@
 return [
     'sentmail_admin' => [
         'parent' => 'site',
-        'access' => 'admin',
+        'access' => 'user',
         'path' => '/module/sentmail',
         'iconIdentifier' => 'module-sentmails',
         'labels' => [
