@@ -22,7 +22,18 @@ class MailRepository
     public function getMails(): array
     {
         return $this->createQueryBuilder()
-            ->select('*')
+            ->select(
+                'uid',
+                'from_name',
+                'from_email',
+                'subject',
+                'is_sent',
+                'crdate',
+                'receiver',
+                'bcc',
+                'cc',
+                'sender',
+            )
             ->from(self::TABLE_NAME)
             ->orderBy('crdate', 'desc')
             ->executeQuery()->fetchAllAssociative();
