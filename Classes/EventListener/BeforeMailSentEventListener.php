@@ -40,7 +40,7 @@ class BeforeMailSentEventListener
         $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_sentmail_mail');
         $connection->insert('tx_sentmail_mail', [
             'crdate' => time(),
-            'subject' => $isReply ? '' : $originalMessage->getHeaders()->getHeaderBody('Subject'),
+            'subject' => (string)($isReply ? '' : $originalMessage->getHeaders()->getHeaderBody('Subject')),
             'sender' => $this->convertAddresses($originalMessage->getFrom()),
             'receiver' => $this->convertAddresses( $originalMessage->getTo()),
             'bcc' => $this->convertAddresses($originalMessage->getBcc()),
