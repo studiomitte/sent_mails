@@ -219,7 +219,7 @@ class MailAdministrationController
         $reloadButton = $buttonBar->makeLinkButton()
             ->setHref($request->getAttribute('normalizedParams')->getRequestUri())
             ->setDataAttributes(['action' => 'reload'])
-            ->setTitle($languageService->sL('LLL:EXT:recycler/Resources/Private/Language/locallang.xlf:button.reload'))
+            ->setTitle($languageService->sL('LLL:EXT:core/Resources/Private/Language/locallang_core.xlf:labels.reload'))
             ->setIcon($this->iconFactory->getIcon('actions-refresh', Icon::SIZE_SMALL));
         $buttonBar->addButton($reloadButton, ButtonBar::BUTTON_POSITION_RIGHT);
     }
